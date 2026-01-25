@@ -1,0 +1,15 @@
+{
+  "player_stats": {
+    "name": "Barista",
+    "stage": 1,
+    "money": 100,
+    "orders_completed": 0,
+    "orders_failed": 0,
+    "orders_rejected": 0
+  },
+  "inventory": {
+    "coffee_beans": 5,
+    "milk": 3,
+    "sugar": 5
+  }
+}

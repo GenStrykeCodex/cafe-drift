@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+.env/
+
+# IDE / Editor Settings
+.vscode/
+.idea/
+*.iml
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Runtime / Temporary Files
+*.tmp
+*.bak
+
+# Game Runtime Data
+data/integrity.hash
