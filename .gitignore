@@ -23,6 +23,3 @@ Thumbs.db
 # Runtime / Temporary Files
 *.tmp
 *.bak
-
-# Game Runtime Data
-data/

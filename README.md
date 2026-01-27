@@ -9,11 +9,11 @@ The game starts as a CLI experience and is designed to evolve over time, with fu
 
 ## Current Status
 
-- **Version:** v0.2.0-alpha  
-- **Stage:** Added CLI Menu and Save Integrity check  
+- **Version:** v0.3.0-alpha  
+- **Stage:** Added Ingredient model & Inventory Services 
 - **Gameplay:** Not implemented yet  
 
-This version focuses on setting up a clean, scalable project structure and data persistence system.
+This version focuses on defining the Ingredients model and integrating Inventory system in game.
 
 ---
 

@@ -6,7 +6,8 @@ class Player:
         money: int,
         orders_completed: int,
         orders_failed: int,
-        orders_rejected: int
+        orders_rejected: int,
+        inventory: dict | None = None
     ):
         self.name = name
         self.stage = stage
@@ -14,6 +15,7 @@ class Player:
         self.orders_completed = orders_completed
         self.orders_failed = orders_failed
         self.orders_rejected = orders_rejected
+        self.inventory = inventory if inventory is not None else {}
 
     @classmethod
     def from_dict(cls, data: dict):

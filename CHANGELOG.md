@@ -1,6 +1,40 @@
 # Café Drift
 
-**Project Status** : `UNDER DEVELOPMENT`
+**Project Status** : `UNDER DEVELOPMENT` | **Gameplay Status** : `NOT IMPLEMENTED`
+
+---
+
+## v0.3.0-alpha Changelog — Inventory & Ingredient System
+
+### Date : 27-01-2026
+
+### Added
+
+* Ingredient model with stage-based unlock design
+* Inventory service with:
+  * Add items
+  * Remove items
+  * Availability checks
+* Ingredient unlock logic tied to player stage
+* Cozy inventory display UI for CLI
+* Player name selection on new game start (default: *Barista*)
+* Integrated inventory, ingredient, and display systems into the game loop
+
+### Improved
+
+* Main game loop now feels interactive and “alive”
+* Better separation of concerns between:
+
+  * Models
+  * Services
+  * UI helpers
+* Cleaner and more maintainable `main.py` structure
+
+### Notes
+
+* No order system yet (planned for next alpha)
+* Inventory is currently restock-only (no consumption)
+* This version focuses on **foundation gameplay systems**
 
 ---
 
@@ -36,7 +70,7 @@
 
 ---
 
-## v0.1.0 Changelog — Project Initialization
+## v0.1.0-alpha Changelog — Project Initialization
 
 ### Date : 25-01-2026
 
