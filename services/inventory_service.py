@@ -22,3 +22,10 @@ def remove_item(inventory: Dict[str, int], ingredient_key: str, quantity: int = 
 
 def has_item(inventory: Dict[str, int], ingredient_key: str, quantity: int = 1) -> bool:
     return inventory.get(ingredient_key, 0) >= quantity
+
+
+def has_required_ingredients(inventory: dict, required: dict) -> bool:
+    for ingredient, qty_needed in required.items():
+        if inventory.get(ingredient, 0) < qty_needed:
+            return False
+    return True

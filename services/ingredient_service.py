@@ -11,6 +11,18 @@ INGREDIENTS = {
     },
     "sugar": {
         "name": "Sugar",
+        "unlock_stage": 1,
+    },
+    "tea_leaves": {
+        "name": "Tea Leaves",
+        "unlock_stage": 1,
+    },
+    "water": {
+        "name": "Water",
+        "unlock_stage": 1,
+    },
+    "ice": {
+        "name": "Ice",
         "unlock_stage": 2,
     },
     "chocolate": {

@@ -9,6 +9,8 @@
   },
   "inventory": {
     "coffee_beans": 5,
+    "water": 3,
+    "tea_leaves": 3,
     "milk": 3,
     "sugar": 5
   }

@@ -3,9 +3,6 @@ from services.ingredient_service import get_ingredient_name
 
 
 def display_inventory(inventory: Dict[str, int]) -> None:
-    """
-    Displays the player's inventory in a cozy CLI format.
-    """
     print("\n📦 Your Inventory")
     print("─" * 30)
 

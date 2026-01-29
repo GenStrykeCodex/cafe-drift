@@ -1,6 +1,52 @@
 # Café Drift
 
-**Project Status** : `UNDER DEVELOPMENT` | **Gameplay Status** : `NOT IMPLEMENTED`
+**Project Status** : `UNDER DEVELOPMENT` | **Gameplay Status** : `BASIC GAMEPLAY`
+
+---
+
+## v0.4.0-alpha Changelog — Orders & Default State System
+
+### Date : 29-01-2026
+
+### Added
+
+* Order system foundation:
+
+  * Fixed order pool with stage-based availability
+  * Random order generation from unlocked orders
+* Order interaction flow:
+
+  * Player can accept or reject orders
+  * Ingredient validation on accepted orders
+* Order outcome tracking:
+
+  * Completed orders
+  * Failed orders
+  * Rejected orders
+* Default game state support via `default_state.json`:
+
+  * Default player stats
+  * Default inventory
+  * Player name overridden at game start
+* Inventory persistence:
+
+  * Inventory now properly loads and saves using `inventory.json`
+
+### Improved
+
+* Clear separation between:
+
+  * Order data (model)
+  * Order logic (service)
+  * Game flow (main loop)
+* Reduced hardcoded values by centralizing defaults in JSON
+* More realistic and scalable game initialization flow
+
+### Notes
+
+* Orders do not consume ingredients yet
+* No money rewards or preparation steps implemented
+* This version focuses on **core gameplay flow**, not balance or realism
 
 ---
 
