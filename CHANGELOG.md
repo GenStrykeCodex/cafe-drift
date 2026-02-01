@@ -4,6 +4,37 @@
 
 ---
 
+## v0.5.0-alpha Changelog – Core Economy & Gameplay Loop
+
+### Date : 01-02-2026
+
+### Added
+- Ingredient-based economy system
+- Formula-driven order pricing
+- Stage-based price multipliers
+- Money rewards for completed orders
+- 10% penalty for failed orders
+- Inventory consumption on successful orders
+- Bulk ingredient purchasing with cost validation
+- End-of-day earnings recap
+- Cozy feedback messages for earnings and failures
+
+### Changed
+- Order prices are no longer hardcoded
+- Inventory.json is now fully integrated into gameplay
+- Order pool moved to `data/order_pool.py` for scalability
+- Improved CLI formatting for restock menu
+
+### Fixed
+- Player stats not updating after order completion
+- Inventory not persisting correctly after gameplay actions
+
+### Notes
+- Gameplay status upgraded from **Basic Gameplay** to **Core Gameplay (Alpha)**
+- Focus remains on correctness, balance, and clean architecture
+
+---
+
 ## v0.4.0-alpha Changelog — Orders & Default State System
 
 ### Date : 29-01-2026

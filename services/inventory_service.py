@@ -24,8 +24,15 @@ def has_item(inventory: Dict[str, int], ingredient_key: str, quantity: int = 1) 
     return inventory.get(ingredient_key, 0) >= quantity
 
 
+# Checks if the player has ingredients required for accepted order.
 def has_required_ingredients(inventory: dict, required: dict) -> bool:
     for ingredient, qty_needed in required.items():
         if inventory.get(ingredient, 0) < qty_needed:
             return False
     return True
+
+
+# Removes used ingredients from inventory after a successful order.
+def remove_ingredients(inventory: dict, required_ingredients: dict) -> None:
+    for ingredient, quantity in required_ingredients.items():
+        remove_item(inventory, ingredient, quantity)

@@ -5,9 +5,14 @@ from utils.file_handler import (
     save_with_integrity,
 )
 
+from services.economy_service import (
+    calculate_order_price,
+    calculate_failure_penalty
+)
+from data.ingredient_costs import INGREDIENT_COSTS
 from models.player import Player
-from services.inventory_service import add_item, has_required_ingredients
-from services.ingredient_service import get_unlocked_ingredients
+from services.inventory_service import add_item, has_required_ingredients, remove_ingredients
+from services.ingredient_service import get_unlocked_ingredients, get_ingredient_name
 from ui.inventory_display import display_inventory
 from services.order_service import generate_random_order
 
@@ -32,6 +37,35 @@ def show_game_menu():
     print("4. Take Order")
     print("5. Close the Café")
 
+# UI Helper
+
+def show_end_of_day_recap(player) -> None:
+    print("\n" + "=" * 45)
+    print("End of Day Summary")
+    print("=" * 45)
+
+    print(f"Barista: {player.name}")
+    print(f"Stage: {player.stage}")
+    print("-" * 45)
+
+    print(f"✅ Orders Completed : {player.orders_completed}")
+    print(f"❌ Orders Failed    : {player.orders_failed}")
+    print(f"🚫 Orders Rejected  : {player.orders_rejected}")
+
+    print("-" * 45)
+    print(f"💰 Current Balance  : {player.money} coins")
+
+    print("=" * 45)
+
+    if player.orders_completed > player.orders_failed:
+        print("\nA productive day! Your café is growing.")
+    elif player.orders_failed > 0:
+        print("\nA learning day — tomorrow will be better.")
+    else:
+        print("\nA calm and quiet day.")
+
+    print("=" * 45 + "\n")
+
 
 # Persistence Actions
 
@@ -46,9 +80,7 @@ def start_new_game() -> Player:
 
     # Name selection
     default_name = default_player.get("name", "Barista")
-    name_input = input(
-        f"Enter your name (press Enter to keep '{default_name}'): "
-    ).strip()
+    name_input = input(f"Enter your name (press Enter to keep '{default_name}'): ").strip()
 
     player_name = name_input if name_input else default_name
 
@@ -128,27 +160,55 @@ def restock_menu(player: Player):
         return
 
     print("\n🛒  Restock Ingredients")
-    print("─" * 30)
+    print("─" * 40)
 
     keys = list(unlocked.keys())
+
     for i, key in enumerate(keys, start=1):
-        print(f"{i}. {unlocked[key]['name']}")
+        name = unlocked[key]["name"]
+        price = INGREDIENT_COSTS.get(key, 0)
+
+        print(f"{i}. {name:<15} — {price:>3} coins each ")
 
     try:
         choice = int(input("\nChoose ingredient number: "))
-        if 1 <= choice <= len(keys):
-            quantity = int(input("Enter quantity: "))
-            if quantity > 0:
-                add_item(player.inventory, keys[choice - 1], quantity)
-                print("Ingredient added to inventory ☕")
-            else:
-                print("Ingredient quantity must be greater than 0.")
-        else:
+        if not (1 <= choice <= len(keys)):
             print("Invalid choice.")
-    except ValueError:
-        print("Please enter a valid number.")
+            return
 
-    save_with_integrity(INVENTORY_FILE, player.inventory)
+        ingredient_key = keys[choice - 1]
+        ingredient_name = get_ingredient_name(ingredient_key)
+        unit_price = INGREDIENT_COSTS.get(ingredient_key, 0)
+
+        quantity = int(input("Enter quantity to buy: "))
+        if quantity <= 0:
+            print("Quantity must be greater than 0.")
+            return
+
+        total_cost = unit_price * quantity
+
+        print(f"\n🧾 {ingredient_name} x{quantity}")
+        print(f"Total cost: {total_cost} coins")
+
+        if player.money < total_cost:
+            print("❌ Not enough money to complete this purchase.")
+            print(f"Your balance: {player.money} coins")
+            return
+
+        # Deduct money
+        player.money -= total_cost
+
+        # Add to inventory
+        add_item(player.inventory, ingredient_key, quantity)
+
+        print(f"✅ Purchased {quantity} {ingredient_name}(s)!")
+        print(f"Remaining balance: {player.money} coins 💰")
+
+        save_with_integrity(PLAYER_FILE, player.to_dict())
+        save_with_integrity(INVENTORY_FILE, player.inventory)
+
+    except ValueError:
+        print("Please enter valid numbers only.")
 
 
 def handle_order(player: Player):
@@ -166,27 +226,50 @@ def handle_order(player: Player):
         print(f"  - {ingredient} x{qty}")
     print("─" * 30)
 
-    choice = input("Accept order? (y = accept / n = reject): ").lower()
+    order_run = True
 
-    if choice == "n":
-        order.mark_rejected()
-        player.orders_rejected += 1
-        print("Order rejected politely ☁️")
-        return
+    while order_run:
+        choice = input("Accept order? (y = accept / n = reject): ").lower()
 
-    if choice != "y":
-        print("Invalid choice. Order ignored.")
-        return
+        if choice == "n":
+            order.mark_rejected()
+            player.orders_rejected += 1
+            print("\n🚫 Order rejected. No money gained or lost.")
+            return
 
-    # Accepted → validate ingredients
-    if has_required_ingredients(player.inventory, order.required_ingredients):
-        order.mark_completed()
-        player.orders_completed += 1
-        print("Order completed successfully ☕✨")
-    else:
-        order.mark_failed()
-        player.orders_failed += 1
-        print("Not enough ingredients — order failed 💭")
+        elif choice == "y":
+            # Accepted → validate ingredients
+            if has_required_ingredients(player.inventory, order.required_ingredients):
+                price = calculate_order_price(order.required_ingredients, player.stage)
+
+                # Deduct ingredients
+                remove_ingredients(player.inventory, order.required_ingredients)
+
+                # Add money
+                player.money += price
+                player.orders_completed += 1
+
+                order.mark_completed()
+
+                print("Order completed successfully ☕✨")
+                print(f"You earned +{price} coins 💰")
+
+                order_run = False
+
+            else:
+                price = calculate_order_price(order.required_ingredients, player.stage)
+                penalty = calculate_failure_penalty(price)
+
+                # Deduct money
+                player.money -= penalty
+                player.orders_failed += 1
+
+                order.mark_failed()
+
+                print(f"\n❌ Order failed!")
+                print(f"You lost {penalty} coins 💸")
+
+                order_run = False
 
     save_with_integrity(PLAYER_FILE, player.to_dict())
     save_with_integrity(INVENTORY_FILE, player.inventory)
@@ -227,6 +310,7 @@ def run_game(player: Player):
 
             elif choice == "5":
                 print("\nStepping away from the counter…")
+                show_end_of_day_recap(player)
                 return
 
             else:

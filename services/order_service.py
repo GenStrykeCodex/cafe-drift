@@ -1,50 +1,12 @@
 import random
+from data.order_pool import ORDER_POOL
 from models.order import Order
 
 
-ORDER_POOL = [
-    # Stage 1 orders
-    Order(
-        name="Tea",
-        required_ingredients={
-            "tea_leaves": 1,
-            "water": 1,
-            "milk": 1
-        },
-        min_stage=1
-    ),
-    Order(
-        name="Coffee",
-        required_ingredients={
-            "coffee_beans": 1,
-            "milk": 1
-        },
-        min_stage=1
-    ),
-    Order(
-        name="Milkshake",
-        required_ingredients={
-            "milk": 2,
-            "sugar": 1
-        },
-        min_stage=1
-    ),
-
-    # Stage 2 orders (example)
-    Order(
-        name="Iced Coffee",
-        required_ingredients={
-            "coffee_beans": 1,
-            "milk": 1,
-            "ice": 1
-        },
-        min_stage=2
-    ),
-]
-
-
+# Returns all orders available for the given player stage.
 def get_unlocked_orders(player_stage: int) -> list:
     unlocked_orders = []
+
     for order in ORDER_POOL:
         if order.is_available(player_stage):
             unlocked_orders.append(order)
@@ -52,6 +14,7 @@ def get_unlocked_orders(player_stage: int) -> list:
     return unlocked_orders
 
 
+# Picks a random unlocked order for the player.
 def generate_random_order(player_stage: int) -> Order | None:
     unlocked_orders = get_unlocked_orders(player_stage)
 

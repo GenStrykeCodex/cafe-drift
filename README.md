@@ -10,52 +10,66 @@ You run a small café, prepare orders, manage ingredients, earn money, and gradu
 
 ## Current Status
 
-- **Version:** v0.4.0-alpha
-- **Stage:** Add Random Stage-based Orders & Gameplay
-- **Gameplay Status:** Basic Gameplay Implemented
+**Version:** v0.5.0-alpha  
+**Gameplay State:** Core Gameplay Implemented (Alpha)
 
-Café Drift now features a functional gameplay loop where players receive café orders, make decisions, and see their progress persist across sessions.
-
-> ⚠️ This project is in **alpha**. Features are incomplete and subject to change.
+The game is playable in CLI and supports a full order → inventory → economy loop.
 
 ---
 
-## Features (as of v0.4.0-alpha)
+## Gameplay Overview
 
-### Player System
+- Start a new café or continue from a saved state
+- Orders appear based on player stage
+- Players can:
+  - Accept orders
+  - Reject orders
+- Accepted orders:
+  - Validate ingredient availability
+  - Consume ingredients on success
+  - Earn money based on ingredient cost and stage
+- Failed orders:
+  - Apply a small money penalty (10%)
+- Inventory is persistent and stage-gated
+- Ingredients can be restocked using earned money
+- End-of-day recap shows performance and balance
 
-* Player identity with optional name selection (default: *Barista*)
-* Stage-based progression system
-* Persistent player statistics:
+---
 
-  * Orders completed
-  * Orders failed
-  * Orders rejected
-  * Money (future use)
+## Core Systems Implemented
 
-### Inventory System
+### ✔ Player System
+- Name (default: Barista, customizable)
+- Stage-based progression
+- Persistent stats (JSON + integrity check)
 
-* Ingredient inventory with add/remove/check logic
-* Inventory persistence using `inventory.json`
-* Stage-based ingredient unlocks
-* Cozy CLI inventory display
+### ✔ Inventory System
+- Add, remove, and batch-consume ingredients
+- Inventory persistence
+- Cozy CLI inventory display
 
-### Order System (Alpha)
+### ✔ Order System
+- Fixed, stage-based order pool
+- Random order generation
+- Accept / Reject flow
+- Tracking of completed, failed, and rejected orders
 
-* Fixed pool of predefined café orders
-* Orders unlock based on player stage
-* Random order generation from unlocked orders
-* Player can:
-  * Accept an order
-  * Reject an order
+### ✔ Economy System
+- Ingredient-based pricing
+- Formula-driven order value:
+```
+Order Price = Total Ingredient Cost × 1.5 × Stage Multiplier
+```
+- Prices rounded to nearest multiple of 5
+- 10% penalty for failed orders
+- Money persistence
 
-* Ingredient validation on accepted orders
-* Orders are marked as:
-  * Completed
-  * Failed
-  * Rejected
+### ✔ End-of-Day Recap
+- Orders summary
+- Current balance
+- Cozy feedback messages
 
-* Order outcomes update persistent player stats
+---
 
 ### Persistence & Safety
 
@@ -91,13 +105,61 @@ Right Click → Run main.py
 
 ---
 
-## Planned Features
+## Project Structure
 
-* Ingredient consumption on successful orders
-* Money rewards and spending system
-* More complex order recipes
-* Stage progression via completed orders
-* GUI version (Tkinter / Pygame) in future major releases
+```
+cafe-drift/
+│
+├── data/
+│   ├── ingredient_costs.py
+│   ├── default_state.json
+│   ├── integrity.json
+│   ├── inventory.json
+│   ├── player_stats.json
+│   └── order_pool.py
+│
+├── models/
+│   ├── player.py
+│   ├── order.py
+│   └── ingredient.py
+│
+├── services/
+│   ├── inventory_service.py
+│   ├── ingredient_service.py
+│   ├── order_service.py
+│   └── economy_service.py
+│
+├── utils/
+│   ├── file_handler.py
+│   └── validators.py
+│
+├── ui/
+│   └── inventory_display.py
+│
+├── main.py
+├── README.md
+├── CHANGELOG.md
+├── LICENSE
+├── requirements.txt
+└── .gitignore
+```
+
+---
+
+## Roadmap (Upcoming)
+
+- Preparation success chance
+- Ingredient shop improvements
+- Daily progression system
+- Customer satisfaction / ratings
+- GUI version (Tkinter / Pygame) in future releases
+
+---
+
+## ⚠ Disclaimer
+
+This project is currently in **alpha**.  
+Features and mechanics are still evolving, and breaking changes may occur.
 
 ---
 
