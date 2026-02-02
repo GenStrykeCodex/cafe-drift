@@ -10,10 +10,10 @@ You run a small café, prepare orders, manage ingredients, earn money, and gradu
 
 ## Current Status
 
-**Version:** v0.5.0-alpha  
-**Gameplay State:** Core Gameplay Implemented (Alpha)
+**Version:** v0.6.0-alpha  
+**Gameplay State:** Core Gameplay + Progression Implemented
 
-The game is playable in CLI and supports a full order → inventory → economy loop.
+The game is fully playable in CLI with a complete gameplay loop and a clear sense of advancement.
 
 ---
 
@@ -30,8 +30,9 @@ The game is playable in CLI and supports a full order → inventory → economy 
   - Earn money based on ingredient cost and stage
 - Failed orders:
   - Apply a small money penalty (10%)
-- Inventory is persistent and stage-gated
-- Ingredients can be restocked using earned money
+- Progress through café stages by completing orders
+- Unlock new ingredients and orders as you advance
+- Restock ingredients using earned money
 - End-of-day recap shows performance and balance
 
 ---
@@ -41,18 +42,26 @@ The game is playable in CLI and supports a full order → inventory → economy 
 ### ✔ Player System
 - Name (default: Barista, customizable)
 - Stage-based progression
+- Skill level (currently aligned with stage)
 - Persistent stats (JSON + integrity check)
 
 ### ✔ Inventory System
-- Add, remove, and batch-consume ingredients
-- Inventory persistence
+- Persistent inventory storage
+- Ingredient consumption on order completion
+- Bulk ingredient restocking with cost validation
 - Cozy CLI inventory display
 
 ### ✔ Order System
 - Fixed, stage-based order pool
 - Random order generation
 - Accept / Reject flow
-- Tracking of completed, failed, and rejected orders
+- Tracks completed, failed, and rejected orders
+
+### ✔ Ingredient System
+- Centralized Ingredient Pool (single source of truth)
+- Ingredient unlocks tied to stage
+- Base cost defined per ingredient
+- Used consistently across inventory and economy
 
 ### ✔ Economy System
 - Ingredient-based pricing
@@ -68,6 +77,11 @@ Order Price = Total Ingredient Cost × 1.5 × Stage Multiplier
 - Orders summary
 - Current balance
 - Cozy feedback messages
+
+### ✔ Stage Progression
+- Stages unlock automatically after completing orders
+- New ingredients unlocked on stage-up
+- Orders scale naturally with stage
 
 ---
 
@@ -148,18 +162,18 @@ cafe-drift/
 
 ## Roadmap (Upcoming)
 
-- Preparation success chance
-- Ingredient shop improvements
-- Daily progression system
-- Customer satisfaction / ratings
-- GUI version (Tkinter / Pygame) in future releases
+- Preparation success mechanics
+- Skill-based effects on gameplay
+- Progression and economy balancing
+- Improved CLI UX
+- GUI version (Tkinter / PyGame) in future releases
 
 ---
 
 ## ⚠ Disclaimer
 
 This project is currently in **alpha**.  
-Features and mechanics are still evolving, and breaking changes may occur.
+Features and mechanics may change, and save compatibility is not guaranteed.
 
 ---
 
@@ -197,7 +211,7 @@ GitHub: https://github.com/GenStrykeCodex/
 
 ## License
 
-This project is licensed under the **MIT Licens**e.
+This project is licensed under the **MIT License**.
 
 ---
 

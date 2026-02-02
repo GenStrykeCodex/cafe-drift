@@ -3,6 +3,7 @@ class Player:
         self,
         name: str,
         stage: int,
+        skill_level: int,
         money: int,
         orders_completed: int,
         orders_failed: int,
@@ -11,6 +12,7 @@ class Player:
     ):
         self.name = name
         self.stage = stage
+        self.skill_level = skill_level
         self.money = money
         self.orders_completed = orders_completed
         self.orders_failed = orders_failed
@@ -22,6 +24,7 @@ class Player:
         return cls(
             name=data.get("name", "Barista"),
             stage=data.get("stage", 1),
+            skill_level=data.get("skill_level", 1),
             money=data.get("money", 0),
             orders_completed=data.get("orders_completed", 0),
             orders_failed=data.get("orders_failed", 0),
@@ -32,6 +35,7 @@ class Player:
         return {
             "name": self.name,
             "stage": self.stage,
+            "skill_level": self.skill_level,
             "money": self.money,
             "orders_completed": self.orders_completed,
             "orders_failed": self.orders_failed,

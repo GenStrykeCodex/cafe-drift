@@ -1,6 +1,34 @@
 # Café Drift
 
-**Project Status** : `UNDER DEVELOPMENT` | **Gameplay Status** : `BASIC GAMEPLAY`
+**Project Status** : `UNDER DEVELOPMENT` | **Gameplay Status** : `CORE GAMEPLAY`
+
+---
+
+## v0.6.0-alpha Changelog – Stage Progression & Unified Ingredient System
+
+### Date : 02-02-2026
+
+### Added
+- Stage progression system based on completed orders
+- Automatic stage-up after meeting progression requirements
+- New ingredients unlocked on stage advancement
+- Skill level introduced (mirrors stage for now)
+- Centralized Ingredient Pool using Ingredient model
+- Stage-based unlock feedback for players
+
+### Changed
+- Ingredient data refactored into a single source of truth
+- Economy service now derives prices from Ingredient objects
+- Main gameplay flow updated to support stage progression
+- Ingredient costs and unlock stages fully data-driven
+
+### Removed
+- Deprecated hardcoded ingredient definitions
+- Deprecated separate ingredient cost mapping
+
+### Notes
+- Gameplay now provides a clear sense of advancement
+- Project remains in **alpha** as core systems continue to evolve
 
 ---
 

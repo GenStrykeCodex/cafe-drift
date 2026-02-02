@@ -2,7 +2,8 @@
   "player_stats": {
     "name": "Barista",
     "stage": 1,
-    "money": 100,
+    "skill_level": 1,
+    "money": 300,
     "orders_completed": 0,
     "orders_failed": 0,
     "orders_rejected": 0

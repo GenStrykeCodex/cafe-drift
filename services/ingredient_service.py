@@ -1,66 +1,37 @@
-from typing import Dict
-
-INGREDIENTS = {
-    "coffee_beans": {
-        "name": "Coffee Beans",
-        "unlock_stage": 1,
-    },
-    "milk": {
-        "name": "Milk",
-        "unlock_stage": 1,
-    },
-    "sugar": {
-        "name": "Sugar",
-        "unlock_stage": 1,
-    },
-    "tea_leaves": {
-        "name": "Tea Leaves",
-        "unlock_stage": 1,
-    },
-    "water": {
-        "name": "Water",
-        "unlock_stage": 1,
-    },
-    "ice": {
-        "name": "Ice",
-        "unlock_stage": 2,
-    },
-    "chocolate": {
-        "name": "Chocolate",
-        "unlock_stage": 3,
-    },
-    "caramel": {
-        "name": "Caramel Syrup",
-        "unlock_stage": 4,
-    },
-}
+from typing import List
+from data.ingredient_pool import INGREDIENT_POOL
+from models.ingredient import Ingredient
 
 
-def get_unlocked_ingredients(stage: int) -> Dict[str, Dict]:
-    return {
-        key: data
-        for key, data in INGREDIENTS.items()
-        if stage >= data["unlock_stage"]
-    }
+def get_unlocked_ingredients(stage: int) -> List[Ingredient]:
+    unlocked_ingredients = []
+
+    for ingredient in INGREDIENT_POOL:
+        if stage >= ingredient.unlock_stage:
+            unlocked_ingredients.append(ingredient)
+
+    return unlocked_ingredients
 
 
 def is_ingredient_unlocked(ingredient_key: str, stage: int) -> bool:
-    ingredient = INGREDIENTS.get(ingredient_key)
+    for ingredient in INGREDIENT_POOL:
+        if ingredient.key == ingredient_key:
+            return stage >= ingredient.unlock_stage
+    return False
 
-    if ingredient is None:
-        return False
 
-    return stage >= ingredient["unlock_stage"]
+def get_ingredient_by_key(ingredient_key: str) -> Ingredient | None:
+    for ingredient in INGREDIENT_POOL:
+        if ingredient.key == ingredient_key:
+            return ingredient
+    return None
 
 
 def get_ingredient_name(ingredient_key: str) -> str:
-    return INGREDIENTS.get(ingredient_key, {}).get("name", ingredient_key)
+    ingredient = get_ingredient_by_key(ingredient_key)
+    return ingredient.name if ingredient else ingredient_key
 
 
-def get_unlock_stage(ingredient_key: str) -> int | None:
-    ingredient = INGREDIENTS.get(ingredient_key)
-
-    if ingredient is None:
-        return None
-
-    return ingredient["unlock_stage"]
+def get_ingredient_cost(ingredient_key: str) -> int:
+    ingredient = get_ingredient_by_key(ingredient_key)
+    return ingredient.base_cost if ingredient else 0

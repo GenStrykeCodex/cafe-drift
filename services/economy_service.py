@@ -1,4 +1,4 @@
-from data.ingredient_costs import INGREDIENT_COSTS
+from services.ingredient_service import get_ingredient_cost
 
 # Base multiplier applied to every order
 BASE_MULTIPLIER = 1.5
@@ -20,8 +20,8 @@ FAILURE_PENALTY_RATE = 0.10
 def calculate_ingredient_cost(ingredients: dict) -> int:
     total_cost = 0
 
-    for ingredient, quantity in ingredients.items():
-        cost = INGREDIENT_COSTS.get(ingredient, 0)
+    for ingredient_key, quantity in ingredients.items():
+        cost = get_ingredient_cost(ingredient_key)
         total_cost += cost * quantity
 
     return total_cost
@@ -33,8 +33,8 @@ def calculate_order_price(ingredients: dict, stage: int) -> int:
     ingredient_cost = calculate_ingredient_cost(ingredients)
 
     stage_multiplier = STAGE_MULTIPLIERS.get(stage, 1.0)
-    raw_price = ingredient_cost * BASE_MULTIPLIER * stage_multiplier
 
+    raw_price = ingredient_cost * BASE_MULTIPLIER * stage_multiplier
     return round_to_nearest_5(raw_price)
 
 

@@ -9,7 +9,8 @@ from services.economy_service import (
     calculate_order_price,
     calculate_failure_penalty
 )
-from data.ingredient_costs import INGREDIENT_COSTS
+
+from services.stage_service import level_up
 from models.player import Player
 from services.inventory_service import add_item, has_required_ingredients, remove_ingredients
 from services.ingredient_service import get_unlocked_ingredients, get_ingredient_name
@@ -88,6 +89,7 @@ def start_new_game() -> Player:
     player = Player(
         name=player_name,
         stage=default_player.get("stage", 1),
+        skill_level=default_player.get("skill_level", 1),
         money=default_player.get("money", 0),
         orders_completed=default_player.get("orders_completed", 0),
         orders_failed=default_player.get("orders_failed", 0),
@@ -153,41 +155,34 @@ def reset_game():
 # Gameplay Actions
 
 def restock_menu(player: Player):
-    unlocked = get_unlocked_ingredients(player.stage)
+    unlocked_ingredients = get_unlocked_ingredients(player.stage)
 
-    if not unlocked:
+    if not unlocked_ingredients:
         print("No ingredients unlocked yet.")
         return
 
     print("\n🛒  Restock Ingredients")
     print("─" * 40)
 
-    keys = list(unlocked.keys())
-
-    for i, key in enumerate(keys, start=1):
-        name = unlocked[key]["name"]
-        price = INGREDIENT_COSTS.get(key, 0)
-
-        print(f"{i}. {name:<15} — {price:>3} coins each ")
+    for i, ingredient in enumerate(unlocked_ingredients, start=1):
+        print(f"{i}. {ingredient.name:<18} — {ingredient.base_cost:>3} coins each")
 
     try:
         choice = int(input("\nChoose ingredient number: "))
-        if not (1 <= choice <= len(keys)):
+        if not (1 <= choice <= len(unlocked_ingredients)):
             print("Invalid choice.")
             return
 
-        ingredient_key = keys[choice - 1]
-        ingredient_name = get_ingredient_name(ingredient_key)
-        unit_price = INGREDIENT_COSTS.get(ingredient_key, 0)
+        ingredient = unlocked_ingredients[choice - 1]
 
         quantity = int(input("Enter quantity to buy: "))
         if quantity <= 0:
             print("Quantity must be greater than 0.")
             return
 
-        total_cost = unit_price * quantity
+        total_cost = ingredient.base_cost * quantity
 
-        print(f"\n🧾 {ingredient_name} x{quantity}")
+        print(f"\n🧾 {ingredient.name} x{quantity}")
         print(f"Total cost: {total_cost} coins")
 
         if player.money < total_cost:
@@ -199,9 +194,9 @@ def restock_menu(player: Player):
         player.money -= total_cost
 
         # Add to inventory
-        add_item(player.inventory, ingredient_key, quantity)
+        add_item(player.inventory, ingredient.key, quantity)
 
-        print(f"✅ Purchased {quantity} {ingredient_name}(s)!")
+        print(f"✅ Purchased {quantity} {get_ingredient_name(ingredient.key)}(s)!")
         print(f"Remaining balance: {player.money} coins 💰")
 
         save_with_integrity(PLAYER_FILE, player.to_dict())
@@ -254,6 +249,17 @@ def handle_order(player: Player):
                 print("Order completed successfully ☕✨")
                 print(f"You earned +{price} coins 💰")
 
+                # Stage progression check
+                newly_unlocked = level_up(player)
+
+                if newly_unlocked:
+                    print("\n✨ Stage Up!")
+                    print(f"Your café has reached Stage {player.stage} ☕")
+
+                    print("\n🔓 New ingredients unlocked:")
+                    for ingredient in newly_unlocked:
+                        print(f"• {ingredient.name}")
+
                 order_run = False
 
             else:
@@ -299,8 +305,10 @@ def run_game(player: Player):
                 unlocked = get_unlocked_ingredients(player.stage)
                 print("\n🔓  Unlocked Ingredients")
                 print("─" * 30)
-                for data in unlocked.values():
-                    print(f"- {data['name']}")
+
+                for ingredient in unlocked:
+                    print(f"- {ingredient.name}")
+
                 print("─" * 30)
                 break
 
