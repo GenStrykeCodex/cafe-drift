@@ -10,15 +10,27 @@ from services.economy_service import (
     calculate_failure_penalty
 )
 
-from services.stage_service import level_up
+from services.inventory_service import (
+    add_item,
+    has_required_ingredients,
+    remove_ingredients
+)
+
+from services.ingredient_service import (
+    get_unlocked_ingredients,
+    get_ingredient_name
+)
+
 from models.player import Player
-from services.inventory_service import add_item, has_required_ingredients, remove_ingredients
-from services.ingredient_service import get_unlocked_ingredients, get_ingredient_name
-from ui.inventory_display import display_inventory
+from services.stage_service import level_up
+from services.preparation_service import attempt_preparation
 from services.order_service import generate_random_order
+from ui.inventory_display import display_inventory
+
 
 PLAYER_FILE = "player_stats.json"
 INVENTORY_FILE = "inventory.json"
+
 
 # Menu Displays
 
@@ -37,6 +49,7 @@ def show_game_menu():
     print("3. View Unlocked Ingredients")
     print("4. Take Order")
     print("5. Close the Café")
+
 
 # UI Helper
 
@@ -219,6 +232,7 @@ def handle_order(player: Player):
     print("Ingredients required:")
     for ingredient, qty in order.required_ingredients.items():
         print(f"  - {ingredient} x{qty}")
+    print(f"Base Price: {calculate_order_price(order.required_ingredients, player.stage)} coins")
     print("─" * 30)
 
     order_run = True
@@ -227,58 +241,79 @@ def handle_order(player: Player):
         choice = input("Accept order? (y = accept / n = reject): ").lower()
 
         if choice == "n":
-            order.mark_rejected()
             player.orders_rejected += 1
             print("\n🚫 Order rejected. No money gained or lost.")
-            return
+
+            order_run = False
 
         elif choice == "y":
-            # Accepted → validate ingredients
-            if has_required_ingredients(player.inventory, order.required_ingredients):
-                price = calculate_order_price(order.required_ingredients, player.stage)
+            handle_order_preparation(player, player.inventory, order)
 
-                # Deduct ingredients
-                remove_ingredients(player.inventory, order.required_ingredients)
+            # Stage progression check
+            newly_unlocked = level_up(player)
 
-                # Add money
-                player.money += price
-                player.orders_completed += 1
+            if newly_unlocked:
+                print("\n✨ Stage Up!")
+                print(f"Your café has reached Stage {player.stage} ☕")
 
-                order.mark_completed()
+                print("\n🔓 New ingredients unlocked:")
+                for ingredient in newly_unlocked:
+                    print(f"• {ingredient.name}")
 
-                print("Order completed successfully ☕✨")
-                print(f"You earned +{price} coins 💰")
+            order_run = False
 
-                # Stage progression check
-                newly_unlocked = level_up(player)
-
-                if newly_unlocked:
-                    print("\n✨ Stage Up!")
-                    print(f"Your café has reached Stage {player.stage} ☕")
-
-                    print("\n🔓 New ingredients unlocked:")
-                    for ingredient in newly_unlocked:
-                        print(f"• {ingredient.name}")
-
-                order_run = False
-
-            else:
-                price = calculate_order_price(order.required_ingredients, player.stage)
-                penalty = calculate_failure_penalty(price)
-
-                # Deduct money
-                player.money -= penalty
-                player.orders_failed += 1
-
-                order.mark_failed()
-
-                print(f"\n❌ Order failed!")
-                print(f"You lost {penalty} coins 💸")
-
-                order_run = False
+        else:
+            print("Invalid choice.")
 
     save_with_integrity(PLAYER_FILE, player.to_dict())
     save_with_integrity(INVENTORY_FILE, player.inventory)
+
+
+def handle_order_preparation(player, inventory: dict, order) -> None:
+    base_price = calculate_order_price(order.required_ingredients, player.stage)
+
+    # Validating ingredients
+    if not has_required_ingredients(inventory, order.required_ingredients):
+        penalty = calculate_failure_penalty(base_price)
+
+        # Deduct money
+        player.money -= penalty
+        player.orders_failed += 1
+
+        print(f"\n❌ Order failed!")
+        print("You don't have enough ingredients!")
+        print("💡 Hint: Always check and restock ingredients before taking orders.")
+        print(f"You lost {penalty} coins 💸")
+        return
+
+    # Player has the ingredients
+    success, success_rate = attempt_preparation(player, order)
+
+    print(f"\n☕ Preparing... (Success chance: {success_rate}%)\n")
+
+    # Deduct ingredients
+    remove_ingredients(player.inventory, order.required_ingredients)
+
+    if success:
+        # Perfectly prepared order
+        player.money += base_price
+
+        print("✅ Order completed!")
+        print("😆 The customer seems fully satisfied ☕✨")
+        print(f"You earned +{base_price} coins 💰")
+
+    else:
+        # Imperfectly prepared order
+        reduced_price = int(base_price * 0.9)
+        player.money += reduced_price
+
+        print("☑️ Order completed!")
+        print("😐 The customer doesn't seem fully satisfied ☕")
+        print("💡 Hint: Work on your skills to improve preparation quality.")
+        print(f"You earned +{reduced_price} coins 💰 (10% Reduced)")
+
+    player.orders_completed += 1
+    return
 
 
 # Game Loop

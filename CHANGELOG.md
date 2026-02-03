@@ -4,6 +4,26 @@
 
 ---
 
+## v0.7.0-alpha Changelog — Preparation & Player Guidance
+
+### Date : 03-02-2026
+
+### Added
+- Preparation success logic with success rate
+- Imperfect order handling with reduced rewards
+- Player Guide system with multiple guide files
+- FAQ for common player questions
+- Clear separation between failed and imperfect orders
+- Improved order handling flow
+
+### Improved
+- Cozy, forgiving gameplay balance
+- Player feedback during order preparation
+- Clarity around stats, inventory, and progression
+- Documentation for new players
+
+---
+
 ## v0.6.0-alpha Changelog – Stage Progression & Unified Ingredient System
 
 ### Date : 02-02-2026
@@ -194,9 +214,5 @@
 - No gameplay logic implemented yet
 - This version focuses purely on architecture and planning
 - Intended as a stable foundation for future versions
-
----
-
-☕ *The café doors are not open yet, but the lights are on.*
 
 ---

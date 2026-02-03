@@ -10,8 +10,8 @@ You run a small café, prepare orders, manage ingredients, earn money, and gradu
 
 ## Current Status
 
-**Version:** v0.6.0-alpha  
-**Gameplay State:** Core Gameplay + Progression Implemented
+**Version:** v0.7.0-alpha  
+**Gameplay State:** Core Gameplay + Progression Implemented + Skill-based Preparation
 
 The game is fully playable in CLI with a complete gameplay loop and a clear sense of advancement.
 
@@ -63,6 +63,10 @@ The game is fully playable in CLI with a complete gameplay loop and a clear sens
 - Base cost defined per ingredient
 - Used consistently across inventory and economy
 
+### ✔ Preparation System
+- Preparation success mechanics
+- Skill-based effects on gameplay
+
 ### ✔ Economy System
 - Ingredient-based pricing
 - Formula-driven order value:
@@ -91,6 +95,10 @@ Order Price = Total Ingredient Cost × 1.5 × Stage Multiplier
 * Hash-based integrity checks to detect save tampering
 * Reset / Start / Continue game flow
 * Centralized default game state via `default_state.json`
+
+---
+## Player Guide
+New players can read the full gameplay guide here: `player_guide/`
 
 ---
 
@@ -143,6 +151,17 @@ cafe-drift/
 │   ├── order_service.py
 │   └── economy_service.py
 │
+├── player_guide/
+│   ├── faq.md
+│   ├── README.md
+│   ├── how_to_play.md
+│   ├── player_stats.md
+│   ├── preparation.md
+│   ├── inventory.md
+│   ├── ingredients.md
+│   ├── orders.md
+│   └── reset_and_saves.md
+│
 ├── utils/
 │   ├── file_handler.py
 │   └── validators.py
@@ -162,8 +181,6 @@ cafe-drift/
 
 ## Roadmap (Upcoming)
 
-- Preparation success mechanics
-- Skill-based effects on gameplay
 - Progression and economy balancing
 - Improved CLI UX
 - GUI version (Tkinter / PyGame) in future releases
