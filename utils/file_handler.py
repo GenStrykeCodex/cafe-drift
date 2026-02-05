@@ -2,12 +2,12 @@ import json
 import os
 import hashlib
 
-BASE_DATA_DIR = "data"
+BASE_DATA_DIR = "runtime_data"
 
 
-def ensure_data_dir():
-    if not os.path.exists(BASE_DATA_DIR):
-        os.makedirs(BASE_DATA_DIR)
+def ensure_data_dir(data_dir: str):
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
 
 
 def generate_hash(data: dict) -> str:
@@ -38,16 +38,16 @@ def load_with_integrity(filename: str, default: dict, integrity_file: str = "int
     return data, stored_hash == current_hash
 
 
-def save_json(filename: str, data: dict):
-    ensure_data_dir()
-    filepath = os.path.join(BASE_DATA_DIR, filename)
+def save_json(filename: str, data: dict, data_dir: str = BASE_DATA_DIR):
+    ensure_data_dir(data_dir)
+    filepath = os.path.join(data_dir, filename)
 
     with open(filepath, "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
 
 
-def load_json(filename: str, default: dict):
-    filepath = os.path.join(BASE_DATA_DIR, filename)
+def load_json(filename: str, default: dict, data_dir: str = BASE_DATA_DIR):
+    filepath = os.path.join(data_dir, filename)
 
     if not os.path.exists(filepath):
         return default

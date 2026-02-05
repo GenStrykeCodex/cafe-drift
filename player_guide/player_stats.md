@@ -60,6 +60,28 @@ Managing money wisely is key to long-term progress.
 
 ---
 
+## 💵 Total Money Earned
+
+This is different from player money as it:
+- Sum of money earned throughout game (isn't affected by penalty or purchase)
+- Doesn't affect purchase
+- Acts as criteria to progress through a stage
+
+You can't decrease Total Money Earned, it helps in tracking stage progress.
+
+---
+
+## 📈 Has Leveled Up Today
+
+This is a boolean stat that tracks:
+- If a user has already leveled up on an in-game day
+- Automatically sets to True when player Levels Up
+- Automatically resets to default value (i.e, False) when End of Day Recap run
+
+It prevents user from rushing progression in single in-game day.
+
+---
+
 ## 📋 Orders Completed
 
 This stat tracks:
@@ -90,6 +112,16 @@ Rejected orders are:
 - Safe decisions with no penalty
 
 Rejecting an order is sometimes the best choice if you’re unprepared.
+
+---
+
+## 📦 Storage Capacity
+
+This stat is used:
+- Set a limit to no. of ingredients that a player can keep in inventory
+- It increases when player progresses through a stage
+
+In future versions, manual storage upgrades will be added.
 
 ---
 

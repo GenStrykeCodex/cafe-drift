@@ -2,6 +2,7 @@ from typing import Dict
 from services.ingredient_service import get_ingredient_name
 
 
+# Show Inventory
 def display_inventory(inventory: Dict[str, int]) -> None:
     print("\n📦 Your Inventory")
     print("─" * 30)

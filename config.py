@@ -1,5 +1,5 @@
 GAME_NAME = "Café Drift"
-VERSION = "v0.1.0"
+VERSION = "v0.8.0-alpha"
 DEV_MODE = True
 
-DATA_PATH = "data"
+DATA_PATH = "runtime_data"

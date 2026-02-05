@@ -4,9 +4,12 @@
     "stage": 1,
     "skill_level": 1,
     "money": 300,
+    "total_money_earned": 0,
+    "has_leveled_up_today": false,
     "orders_completed": 0,
     "orders_failed": 0,
-    "orders_rejected": 0
+    "orders_rejected": 0,
+    "storage_capacity": 30
   },
   "inventory": {
     "coffee_beans": 5,

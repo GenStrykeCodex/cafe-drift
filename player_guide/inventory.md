@@ -34,6 +34,7 @@ When restocking:
 - You can buy multiple units at once
 - The total cost is shown before purchase
 - You cannot buy more than your available money
+- You cannot buy more than storage capacity
 
 Restocking wisely prevents failed orders and money loss.
 
@@ -60,6 +61,15 @@ If you accept an order without enough ingredients:
 - The customer leaves unhappy
 
 This is the only way orders can truly fail.
+
+---
+
+## 📦 Storage Capacity
+
+There is a limit to no. of items that a player can keep in Inventory.
+- This is done to prevent hoarding of ingredients at early stage
+- Inventory can be upgraded when stage increases
+- Manual Storage upgrade will be added in future
 
 ---
 

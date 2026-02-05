@@ -3,6 +3,7 @@ from data.ingredient_pool import INGREDIENT_POOL
 from models.ingredient import Ingredient
 
 
+# Returns all ingredients unlocked at a stage
 def get_unlocked_ingredients(stage: int) -> List[Ingredient]:
     unlocked_ingredients = []
 
@@ -13,6 +14,7 @@ def get_unlocked_ingredients(stage: int) -> List[Ingredient]:
     return unlocked_ingredients
 
 
+# Checks if an ingredient is unlocked or not
 def is_ingredient_unlocked(ingredient_key: str, stage: int) -> bool:
     for ingredient in INGREDIENT_POOL:
         if ingredient.key == ingredient_key:
@@ -20,6 +22,7 @@ def is_ingredient_unlocked(ingredient_key: str, stage: int) -> bool:
     return False
 
 
+# Returns ingredient based on key
 def get_ingredient_by_key(ingredient_key: str) -> Ingredient | None:
     for ingredient in INGREDIENT_POOL:
         if ingredient.key == ingredient_key:
@@ -27,11 +30,13 @@ def get_ingredient_by_key(ingredient_key: str) -> Ingredient | None:
     return None
 
 
+# Returns ingredient name based on key
 def get_ingredient_name(ingredient_key: str) -> str:
     ingredient = get_ingredient_by_key(ingredient_key)
     return ingredient.name if ingredient else ingredient_key
 
 
+# Returns ingredient base cost based on key
 def get_ingredient_cost(ingredient_key: str) -> int:
     ingredient = get_ingredient_by_key(ingredient_key)
     return ingredient.base_cost if ingredient else 0

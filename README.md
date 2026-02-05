@@ -10,7 +10,7 @@ You run a small café, prepare orders, manage ingredients, earn money, and gradu
 
 ## Current Status
 
-**Version:** v0.7.0-alpha  
+**Version:** v0.8.0-alpha  
 **Gameplay State:** Core Gameplay + Progression Implemented + Skill-based Preparation
 
 The game is fully playable in CLI with a complete gameplay loop and a clear sense of advancement.
@@ -30,8 +30,9 @@ The game is fully playable in CLI with a complete gameplay loop and a clear sens
   - Earn money based on ingredient cost and stage
 - Failed orders:
   - Apply a small money penalty (10%)
-- Progress through café stages by completing orders
-- Unlock new ingredients and orders as you advance
+- View the café status and progress
+- Progress through café stages by completing orders and earning threshold money
+- Unlock new ingredients, orders and storage upgrades as you advance
 - Restock ingredients using earned money
 - End-of-day recap shows performance and balance
 
@@ -50,6 +51,7 @@ The game is fully playable in CLI with a complete gameplay loop and a clear sens
 - Ingredient consumption on order completion
 - Bulk ingredient restocking with cost validation
 - Cozy CLI inventory display
+- Storage capacity that prevents hoarding
 
 ### ✔ Order System
 - Fixed, stage-based order pool
@@ -80,11 +82,13 @@ Order Price = Total Ingredient Cost × 1.5 × Stage Multiplier
 ### ✔ End-of-Day Recap
 - Orders summary
 - Current balance
+- Progress to next stage
 - Cozy feedback messages
 
 ### ✔ Stage Progression
-- Stages unlock automatically after completing orders
+- Stages unlock automatically after completing orders and earning money
 - New ingredients unlocked on stage-up
+- Storage Capacity increases on stage-up
 - Orders scale naturally with stage
 
 ---
@@ -133,23 +137,16 @@ Right Click → Run main.py
 cafe-drift/
 │
 ├── data/
-│   ├── ingredient_costs.py
+│   ├── capacity_upgrades.json
+│   ├── stage_rules.json
 │   ├── default_state.json
-│   ├── integrity.json
-│   ├── inventory.json
-│   ├── player_stats.json
+│   ├── ingredient_pool.py
 │   └── order_pool.py
 │
 ├── models/
 │   ├── player.py
 │   ├── order.py
 │   └── ingredient.py
-│
-├── services/
-│   ├── inventory_service.py
-│   ├── ingredient_service.py
-│   ├── order_service.py
-│   └── economy_service.py
 │
 ├── player_guide/
 │   ├── faq.md
@@ -162,14 +159,29 @@ cafe-drift/
 │   ├── orders.md
 │   └── reset_and_saves.md
 │
+├── runtime_data/
+│   ├── integrity.json
+│   ├── inventory.json
+│   └── player_stats.json
+│
+├── services/
+│   ├── inventory_service.py
+│   ├── ingredient_service.py
+│   ├── order_service.py
+│   ├── preparation_service.py
+│   ├── stage_service.py
+│   └── economy_service.py
+│
+├── ui/
+│   ├── inventory_display.py
+│   └── status_display.py
+│
 ├── utils/
 │   ├── file_handler.py
 │   └── validators.py
 │
-├── ui/
-│   └── inventory_display.py
-│
 ├── main.py
+├── config.py
 ├── README.md
 ├── CHANGELOG.md
 ├── LICENSE
@@ -205,7 +217,8 @@ Features and mechanics may change, and save compatibility is not guaranteed.
 
 ## Reset Game
 
-Café Drift includes a **Reset Game** mechanism designed for testing and development.  
+Café Drift includes a **Reset Game** mechanism designed for testing and development. 
+
 This resets player stats, inventory, and regenerates integrity data to ensure a clean state.
 
 ---
@@ -234,7 +247,8 @@ This project is licensed under the **MIT License**.
 
 ### Final note
 
-Café Drift is now **playable**, but still growing.
-Each version adds one calm, intentional step toward a complete café experience.
+Café Drift is now **fully playable**, but still growing.
+
+Each version adds feature to enhance User Experience.
 
 ---

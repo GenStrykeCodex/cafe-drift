@@ -13,12 +13,19 @@ from services.economy_service import (
 from services.inventory_service import (
     add_item,
     has_required_ingredients,
+    get_inventory_count,
     remove_ingredients
 )
 
 from services.ingredient_service import (
     get_unlocked_ingredients,
     get_ingredient_name
+)
+
+from ui.status_display import (
+    display_status,
+    display_stage_progress,
+    display_inventory_status
 )
 
 from models.player import Player
@@ -48,37 +55,53 @@ def show_game_menu():
     print("2. Restock Ingredient")
     print("3. View Unlocked Ingredients")
     print("4. Take Order")
-    print("5. Close the Café")
+    print("5. View Café Status")
+    print("6. Close the Café")
 
 
 # UI Helper
 
 def show_end_of_day_recap(player) -> None:
-    print("\n" + "=" * 45)
-    print("End of Day Summary")
-    print("=" * 45)
+    print("\n" + "=" * 50)
+    print("☾ End of Day Summary")
+    print("=" * 50)
 
     print(f"Barista: {player.name}")
-    print(f"Stage: {player.stage}")
-    print("-" * 45)
+    print(f"Stage  : {player.stage}")
+    print("-" * 50)
 
     print(f"✅ Orders Completed : {player.orders_completed}")
     print(f"❌ Orders Failed    : {player.orders_failed}")
     print(f"🚫 Orders Rejected  : {player.orders_rejected}")
 
-    print("-" * 45)
-    print(f"💰 Current Balance  : {player.money} coins")
+    print("-" * 50)
+    print(f"💰 Current Balance     : {player.money} coins")
+    print(f"📈 Total Money Earned  : {player.total_money_earned} coins")
 
-    print("=" * 45)
+    print("-" * 50)
+    print()
 
+    # Stage progression feedback
+    display_stage_progress(player)
+
+    print()
+    print("=" * 50)
+
+    # Cozy day summary
     if player.orders_completed > player.orders_failed:
-        print("\nA productive day! Your café is growing.")
+        print("☕ A productive day! Your café is steadily growing.")
     elif player.orders_failed > 0:
-        print("\nA learning day — tomorrow will be better.")
+        print("🌱 A learning day — tomorrow will be better.")
     else:
-        print("\nA calm and quiet day.")
+        print("🌙 A calm and quiet day.")
 
-    print("=" * 45 + "\n")
+    print("=" * 50 + "\n")
+
+    # Reset daily progression lock
+    player.has_leveled_up_today = False
+
+    save_with_integrity(PLAYER_FILE, player.to_dict())
+    save_with_integrity(INVENTORY_FILE, player.inventory)
 
 
 # Persistence Actions
@@ -87,7 +110,7 @@ def start_new_game() -> Player:
     print("\nStarting a new game...\n")
 
     # Load default state
-    default_state = load_json("default_state.json", default={})
+    default_state = load_json("default_state.json", default={}, data_dir="data")
 
     default_player = default_state.get("player_stats", {})
     default_inventory = default_state.get("inventory", {})
@@ -104,9 +127,12 @@ def start_new_game() -> Player:
         stage=default_player.get("stage", 1),
         skill_level=default_player.get("skill_level", 1),
         money=default_player.get("money", 0),
+        total_money_earned=default_player.get("total_money_earned", 0),
+        has_leveled_up_today=default_player.get("has_leveled_up_today", False),
         orders_completed=default_player.get("orders_completed", 0),
         orders_failed=default_player.get("orders_failed", 0),
         orders_rejected=default_player.get("orders_rejected", 0),
+        storage_capacity=default_player.get("storage_capacity", 30),
     )
 
     player.inventory = default_inventory.copy()
@@ -116,7 +142,6 @@ def start_new_game() -> Player:
 
     print(f"\nWelcome, {player.name}! Your café journey begins ☕")
     return player
-
 
 
 def continue_game() -> Player | None:
@@ -180,6 +205,10 @@ def restock_menu(player: Player):
     for i, ingredient in enumerate(unlocked_ingredients, start=1):
         print(f"{i}. {ingredient.name:<18} — {ingredient.base_cost:>3} coins each")
 
+    print("─" * 40)
+    display_inventory_status(player)
+    print("─" * 40)
+
     try:
         choice = int(input("\nChoose ingredient number: "))
         if not (1 <= choice <= len(unlocked_ingredients)):
@@ -191,6 +220,13 @@ def restock_menu(player: Player):
         quantity = int(input("Enter quantity to buy: "))
         if quantity <= 0:
             print("Quantity must be greater than 0.")
+            return
+
+        inventory_count = get_inventory_count(player.inventory)
+
+        if inventory_count + quantity > player.storage_capacity:
+            print("\nNot enough storage capacity.")
+            print("Continue preparing orders to make space.")
             return
 
         total_cost = ingredient.base_cost * quantity
@@ -211,6 +247,14 @@ def restock_menu(player: Player):
 
         print(f"✅ Purchased {quantity} {get_ingredient_name(ingredient.key)}(s)!")
         print(f"Remaining balance: {player.money} coins 💰")
+
+        print("─" * 40)
+        display_inventory_status(player)
+        print("─" * 40)
+
+        if inventory_count + quantity == player.storage_capacity:
+            print("\nInventory is FULL.")
+            print("No more space.")
 
         save_with_integrity(PLAYER_FILE, player.to_dict())
         save_with_integrity(INVENTORY_FILE, player.inventory)
@@ -250,11 +294,13 @@ def handle_order(player: Player):
             handle_order_preparation(player, player.inventory, order)
 
             # Stage progression check
-            newly_unlocked = level_up(player)
+            newly_unlocked, capacity_increase = level_up(player)
 
             if newly_unlocked:
                 print("\n✨ Stage Up!")
                 print(f"Your café has reached Stage {player.stage} ☕")
+
+                print(f"\nStorage capacity +{capacity_increase}")
 
                 print("\n🔓 New ingredients unlocked:")
                 for ingredient in newly_unlocked:
@@ -297,6 +343,7 @@ def handle_order_preparation(player, inventory: dict, order) -> None:
     if success:
         # Perfectly prepared order
         player.money += base_price
+        player.total_money_earned += base_price
 
         print("✅ Order completed!")
         print("😆 The customer seems fully satisfied ☕✨")
@@ -306,6 +353,7 @@ def handle_order_preparation(player, inventory: dict, order) -> None:
         # Imperfectly prepared order
         reduced_price = int(base_price * 0.9)
         player.money += reduced_price
+        player.total_money_earned += reduced_price
 
         print("☑️ Order completed!")
         print("😐 The customer doesn't seem fully satisfied ☕")
@@ -313,6 +361,9 @@ def handle_order_preparation(player, inventory: dict, order) -> None:
         print(f"You earned +{reduced_price} coins 💰 (10% Reduced)")
 
     player.orders_completed += 1
+
+    save_with_integrity(PLAYER_FILE, player.to_dict())
+    save_with_integrity(INVENTORY_FILE, player.inventory)
     return
 
 
@@ -320,7 +371,6 @@ def handle_order_preparation(player, inventory: dict, order) -> None:
 
 def run_game(player: Player):
     print(f"\nWelcome to Café Drift, {player.name} ☕")
-    print("Your café is quiet… for now.\n")
 
     while True:
         show_game_menu()
@@ -330,6 +380,8 @@ def run_game(player: Player):
 
             if choice == "1":
                 display_inventory(player.inventory)
+                display_inventory_status(player)
+                print("─" * 30)
                 break
 
             elif choice == "2":
@@ -338,7 +390,7 @@ def run_game(player: Player):
 
             elif choice == "3":
                 unlocked = get_unlocked_ingredients(player.stage)
-                print("\n🔓  Unlocked Ingredients")
+                print("\n🔓 Unlocked Ingredients")
                 print("─" * 30)
 
                 for ingredient in unlocked:
@@ -352,6 +404,10 @@ def run_game(player: Player):
                 break
 
             elif choice == "5":
+                display_status(player)
+                break
+
+            elif choice == "6":
                 print("\nStepping away from the counter…")
                 show_end_of_day_recap(player)
                 return

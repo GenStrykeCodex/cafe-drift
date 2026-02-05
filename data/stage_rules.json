@@ -1,0 +1,18 @@
+{
+  "2": {
+    "min_orders_completed": 5,
+    "min_total_money_earned": 500
+  },
+  "3": {
+    "min_orders_completed": 15,
+    "min_total_money_earned": 1200
+  },
+  "4": {
+    "min_orders_completed": 30,
+    "min_total_money_earned": 2500
+  },
+  "5": {
+    "min_orders_completed": 55,
+    "min_total_money_earned": 5000
+  }
+}

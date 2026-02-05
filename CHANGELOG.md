@@ -4,6 +4,49 @@
 
 ---
 
+## v0.8.0-alpha Changelog — Progression & Storage Overhaul
+
+### Date : 05-02-2026
+
+### Added
+
+- Data-driven stage progression using `stage_rules.json`
+- `total_money_earned` stat to fairly gate progression
+- Player storage capacity as a persistent stat
+- Stage-based storage capacity upgrades via `capacity_upgrades.json`
+- Café status display showing:
+  - Stage
+  - Inventory usage
+  - Storage capacity
+  - Progress toward next stage
+- Player feedback when:
+  - Stage progression is locked
+  - Inventory capacity is full
+- Clear end-of-day progression summary
+
+### Changed
+
+- Separated configuration data from runtime save data
+- Refactored JSON load/save utilities to support configurable data directories
+- Stage level-up logic refactored to be rule-based and incremental
+- Inventory restocking now respects storage capacity limits
+- End-of-day recap updated to reflect progression systems
+
+### Improved
+
+- Cleaner separation of UI, services, and game logic
+- Safer progression flow (prevents accidental multi-stage jumps)
+- Improved player guidance for restocking and progression
+- Player Guide updated to reflect new mechanics
+
+### Notes
+
+- Save file structure changed in this version
+- Older saves may not be compatible
+- Café Drift remains in active alpha development
+
+---
+
 ## v0.7.0-alpha Changelog — Preparation & Player Guidance
 
 ### Date : 03-02-2026

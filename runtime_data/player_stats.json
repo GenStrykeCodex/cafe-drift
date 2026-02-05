@@ -1,0 +1,12 @@
+{
+    "name": "Heo",
+    "stage": 2,
+    "skill_level": 1,
+    "money": 621,
+    "total_money_earned": 776,
+    "has_leveled_up_today": false,
+    "orders_completed": 7,
+    "orders_failed": 1,
+    "orders_rejected": 0,
+    "storage_capacity": 40
+}

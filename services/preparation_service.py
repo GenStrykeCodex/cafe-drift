@@ -13,6 +13,7 @@ def calculate_success_rate(skill_level: int, ingredient_count: int) -> int:
     return max(MIN_SUCCESS_RATE, min(MAX_SUCCESS_RATE, success_rate))
 
 
+# Attempt to prepare the order
 def attempt_preparation(player, order) -> tuple[bool, int]:
     ingredient_count = len(order.required_ingredients)
 

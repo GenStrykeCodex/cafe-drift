@@ -52,6 +52,7 @@ Rejecting an order is sometimes the smart choice if you lack ingredients.
 - Ingredients are required to complete orders
 - Each ingredient has a cost
 - Ingredients must be restocked using money
+- Inventory can become full, focus on progressing and clearing space
 
 If you accept an order **without enough ingredients**, the order will fail, and you’ll lose some money.
 
@@ -80,6 +81,7 @@ Your café grows through **stages**:
 - New stages unlock:
   - New ingredients
   - New orders
+- Increase Storage Capacity by progressing
 
 Stage progression is automatic — just keep serving customers!
 

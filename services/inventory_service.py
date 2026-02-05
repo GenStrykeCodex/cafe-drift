@@ -1,6 +1,7 @@
 from typing import Dict
 
 
+# Add item to inventory
 def add_item(inventory: Dict[str, int], ingredient_key: str, quantity: int = 1) -> None:
     if quantity <= 0:
         return
@@ -8,6 +9,7 @@ def add_item(inventory: Dict[str, int], ingredient_key: str, quantity: int = 1) 
     inventory[ingredient_key] = inventory.get(ingredient_key, 0) + quantity
 
 
+# Remove item from inventory
 def remove_item(inventory: Dict[str, int], ingredient_key: str, quantity: int = 1) -> bool:
     if ingredient_key not in inventory or inventory[ingredient_key] < quantity:
         return False
@@ -22,6 +24,16 @@ def remove_item(inventory: Dict[str, int], ingredient_key: str, quantity: int = 
 
 def has_item(inventory: Dict[str, int], ingredient_key: str, quantity: int = 1) -> bool:
     return inventory.get(ingredient_key, 0) >= quantity
+
+
+# Get total no. of items in inventory
+def get_inventory_count(inventory: Dict):
+    count = 0
+
+    for quantity in inventory.values():
+        count += quantity
+
+    return count
 
 
 # Checks if the player has ingredients required for accepted order.

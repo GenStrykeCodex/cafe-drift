@@ -84,7 +84,19 @@ This is intentional and meant as gentle feedback, not punishment.
 
 ---
 
-## Q12. Will there be more features?
+## Q12: Why can’t I restock more ingredients?
+
+Your storage capacity is full. Level up to increase capacity or free up storage by preparing orders.
+
+---
+
+## Q13: Why didn’t I level up after completing orders?
+For Stage progression, you have to complete fixed amount of orders and 
+also have to earn a specific amount of money (can be seen by View Status option).
+
+---
+
+## Q14. Will there be more features?
 
 Yes.
 Planned additions include:
@@ -95,7 +107,7 @@ Planned additions include:
 
 ---
 
-## Q13. Is Café Drift open-source?
+## Q15. Is Café Drift open-source?
 
 Yes.
 You are free to explore the code, learn from it, and contribute
@@ -103,7 +115,7 @@ according to the project license.
 
 ---
 
-## Q14. How should I play Café Drift?
+## Q16. How should I play Café Drift?
 
 Slowly.
 Think before accepting orders, manage inventory carefully,
